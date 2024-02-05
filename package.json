@@ -2,7 +2,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon app.js",
-    "build": "npm build app.js"
+    "build": "npm install && npm run build"
   },
   "dependencies": {
     "dotenv": "^16.4.1",
