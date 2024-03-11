@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
 
 const userSchema = new mongoose.Schema({
  email: {
@@ -23,9 +22,12 @@ const userSchema = new mongoose.Schema({
     required: true,
     trim: true,
  },
+ role: {
+    type: String,
+    enum: ['employee', 'manager', 'admin'],
+    default: 'employee',
+ },
 });
-
-
 
 const User = mongoose.model('User', userSchema);
 
