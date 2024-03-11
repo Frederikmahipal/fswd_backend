@@ -1,13 +1,22 @@
-import express from "express"
+// app.js
+import express from 'express';
+import userRoutes from './routes/user_routes.js';
+import cors from 'cors';
+import errorHandler from './middleware/error_handler.js';
+import { connectDB } from './db.js';
+
+const app = express();
+const port = 8000;
 
 
-const app = express()
-const port = 8080
+connectDB();
 
+app.use(cors());
+app.use(express.json());
+app.use('/users', userRoutes);
 
-app.use('/', require('./routes/index'));
+app.use(errorHandler);
 
-app.listen(port, function () {
-    console.log('app listening on port ' + port);
-  });
-
+app.listen(port, () => {
+ console.log(`Server running on port ${port}`);
+});

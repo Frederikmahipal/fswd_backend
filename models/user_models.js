@@ -1,46 +1,32 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
 const userSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        unique: true,
-        required: true
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    date: {
-        type: Date,
-        default: Date.now
-    },
-    followers: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'User'
-    },
-    following: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'User'
-    }
+ email: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+    trim: true,
+ },
+ password: {
+    type: String,
+    required: true,
+ },
+ firstName: {
+    type: String,
+    required: true,
+    trim: true,
+ },
+ lastName: {
+    type: String,
+    required: true,
+    trim: true,
+ },
 });
 
 
-userSchema.methods.follow = function(userId) {
-    if (userId === this._id) {
-        throw new Error('You cannot follow yourself');
-    }
-    this.following.push(userId);
-    return this.save();
-}
 
+const User = mongoose.model('User', userSchema);
 
-userSchema.methods.unfollow = function(userId) {
-    this.following.remove(userId);
-    return this.save();
-}
-
-module.exports = mongoose.model('User', userSchema);
+export default User;
