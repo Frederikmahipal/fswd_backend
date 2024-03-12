@@ -9,6 +9,7 @@ router.get('/all', async (req, res) => {
     try {
         const companies = await company.find({});
         res.status(200).json(companies);
+        res.send(companies);
     } catch (error) {
         console.error('Error getting companies:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
