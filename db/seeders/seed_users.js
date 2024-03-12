@@ -1,6 +1,7 @@
 import { fakerDA as faker } from '@faker-js/faker';
 import User from '../../models/user_models.js';
 import Company from '../../models/company_models.js'; 
+import bcryptjs from 'bcryptjs';
 
 export async function seedUsers() {
     const users = [];
@@ -9,9 +10,12 @@ export async function seedUsers() {
         const domain = email.split('@')[1].trim();
         const company = await Company.findOne({ company_email: { $regex: new RegExp(domain, 'i') } }); 
 
+        const password = faker.internet.password();
+        const hashedPassword = await bcryptjs.hash(password, 10);
+
         const user = new User({
             email,
-            password: faker.internet.password(),
+            password: hashedPassword, 
             firstName: faker.person.firstName(),
             lastName: faker.person.lastName(),
             role: 'employee',
@@ -25,6 +29,15 @@ export async function seedUsers() {
 
         users.push(user);
     }
+    const admin = new User({
+        email: 'admin@admin.com',
+        password: await bcryptjs.hash('123', 10),
+        firstName: 'Admin',
+        lastName: 'Admin',
+        role: 'admin',
+    });
+    await admin.save();
     console.log(users);
     return users;
 }
+
