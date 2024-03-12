@@ -5,7 +5,7 @@ import roleCheck from '../middleware/role_middleware.js';
 import authJwt from '../middleware/auth.js';
 
 
-router.get('/all', authJwt, roleCheck(['admin', 'employee']), async (req, res) => {
+router.get('/all', authJwt, roleCheck(['admin']), async (req, res) => {
     try {
         const companies = await company.find({});
         res.status(200).json(companies);
