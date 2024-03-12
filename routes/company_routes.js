@@ -5,7 +5,7 @@ import roleCheck from '../middleware/role_middleware.js';
 import authJwt from '../middleware/auth.js';
 
 
-router.get('/all'), async (req, res) => {
+router.get('/all', async (req, res) => {
     try {
         const companies = await company.find({});
         res.status(200).json(companies);
@@ -13,7 +13,8 @@ router.get('/all'), async (req, res) => {
         console.error('Error getting companies:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
-};
+});
+
 
 router.post('/create', authJwt, roleCheck(['admin']), async (req, res) => {
     try {
