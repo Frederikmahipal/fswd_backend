@@ -1,6 +1,6 @@
 import express from 'express';
 import User from '../models/user_models.js';
-import bcrypt from 'bcrypt';
+import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Company from '../models/company_models.js';
 
@@ -15,7 +15,7 @@ router.post('/signup', async (req, res) => {
          return res.status(400).json({ message: 'User already exists' });
       }
 
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = await bcryptjs.hash(password, 10);
 
       const user = new User({ email, password: hashedPassword, firstName, lastName });
       await user.save();
@@ -44,7 +44,7 @@ router.post('/login', async (req, res) => {
          return res.status(400).json({ message: 'User does not exist' });
       }
 
-      const isMatch = await bcrypt.compare(password, user.password);
+      const isMatch = await bcryptjs.compare(password, user.password);
       if (!isMatch) {
          return res.status(400).json({ message: 'Invalid credentials' });
       }
