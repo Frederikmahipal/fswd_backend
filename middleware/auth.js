@@ -14,5 +14,5 @@ const authJwt = (req, res, next) => {
       });
    }
   };
-  
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
 export default authJwt;
