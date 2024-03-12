@@ -39,6 +39,19 @@ router.post('/create', authJwt, roleCheck(['admin']), async (req, res) => {
 
 });
 
+router.delete('/delete/:id', authJwt, roleCheck(['admin']), async (req, res) => {
+    try {
+        const companyToDelete = await company.findById(req.params.id);
+        if (!companyToDelete) {
+            return res.status(400).json({ message: 'Company not found' });
+        }
+        await companyToDelete.remove();
+        res.status(200).json({ message: 'Company deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting company:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+});
 
 
 export default router;

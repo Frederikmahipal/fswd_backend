@@ -1,6 +1,6 @@
 import express from 'express';
 import User from '../models/user_models.js';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Company from '../models/company_models.js';
 
@@ -62,5 +62,17 @@ router.post('/signout', (req, res) => {
    res.status(200).json({ message: 'User signed out successfully' });
 });
 
+router.delete('/delete/:id', async (req, res) => {
+   try {
+      const userToDelete = await User.findById(req.params.id);
+      if (!userToDelete) {
+         return res.status(400).json({ message: 'User not found' });
+      }
+      await userToDelete.remove();
+      res.status(200).json({ message: 'User deleted successfully' });
+   } catch (error) {
+      res.status(500).json({ message: 'Server error' });
+   }
+});
 
 export default router;
