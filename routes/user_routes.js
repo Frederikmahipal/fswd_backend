@@ -3,7 +3,6 @@ import User from '../models/user_models.js';
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Company from '../models/company_models.js';
-
 const router = express.Router();
 
 router.post('/signup', async (req, res) => {
