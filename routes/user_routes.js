@@ -6,6 +6,29 @@ import Company from '../models/company_models.js';
 
 const router = express.Router();
 
+router.get('/user/:userId/company', async (req, res) => {
+   try {
+       const { userId } = req.params;
+
+       const user = await User.findById(userId);
+       if (!user) {
+           return res.status(404).json({ message: 'User not found' });
+       }
+
+       const domain = user.email.split('@')[1].trim();
+
+       const company = await Company.findOne({ company_email: { $regex: new RegExp(domain, 'i') } });
+       if (!company) {
+           return res.status(404).json({ message: 'Company not found' });
+       }
+
+       res.status(200).json({ company });
+   } catch (error) {
+       res.status(500).json({ message: error.message });
+   }
+});
+
+
 router.post('/signup', async (req, res) => {
    try {
       const { email, password, firstName, lastName } = req.body;
@@ -31,7 +54,7 @@ router.post('/signup', async (req, res) => {
 
       res.status(201).json({ message: 'User created successfully', token });
    } catch (error) {
-      res.status(500).json({ message: error.message || 'Server error' });
+      res.status(500).json({ message: error.message });
    }
 });
 
