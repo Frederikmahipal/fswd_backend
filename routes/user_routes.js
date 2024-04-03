@@ -8,25 +8,26 @@ const router = express.Router();
 
 router.get('/user/:userId/company', async (req, res) => {
    try {
-       const { userId } = req.params;
+      const { userId } = req.params;
 
-       const user = await User.findById(userId);
-       if (!user) {
-           return res.status(404).json({ message: 'User not found' });
-       }
+      const user = await User.findById(userId);
+      if (!user) {
+         return res.status(404).json({ message: 'User not found' });
+      }
 
-       const domain = user.email.split('@')[1].trim();
+      const domain = user.email.split('@')[1].trim();
 
-       const company = await Company.findOne({ company_email: { $regex: new RegExp(domain, 'i') } });
-       if (!company) {
-           return res.status(404).json({ message: 'Company not found' });
-       }
+      const company = await Company.findOne({ company_email: { $regex: new RegExp(domain, 'i') } });
+      if (!company) {
+         return res.status(404).json({ message: 'Company not found' });
+      }
 
-       res.status(200).json({ company });
+      res.status(200).json({ company });
    } catch (error) {
-       res.status(500).json({ message: error.message });
+      res.status(500).json({ message: error.message });
    }
 });
+
 
 
 router.post('/signup', async (req, res) => {
@@ -49,10 +50,11 @@ router.post('/signup', async (req, res) => {
          company.employees.push(user._id);
          await company.save();
       }
-
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-      res.status(201).json({ message: 'User created successfully', token });
+      res.cookie('token', token, { httpOnly: true });
+
+      res.status(201).json({ message: 'User created successfully' });
    } catch (error) {
       res.status(500).json({ message: error.message });
    }
@@ -74,6 +76,8 @@ router.post('/login', async (req, res) => {
 
       const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
+      res.cookie('token', token, { httpOnly: true });
+    
       res.status(200).json({ token, firstName: user.firstName, lastName: user.lastName, role: user.role });
    } catch (error) {
       res.status(500).json({ message: 'Server error' });
@@ -81,7 +85,9 @@ router.post('/login', async (req, res) => {
 });
 
 router.post('/signout', (req, res) => {
-   //stateless, remove on client
+  
+   res.clearCookie('token');
+
    res.status(200).json({ message: 'User signed out successfully' });
 });
 
