@@ -61,3 +61,5 @@ router.delete('/delete/:id', authJwt, roleCheck(['admin', 'manager']), async (re
         console.log('error deleting project:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
     }});
+
+    export default router;

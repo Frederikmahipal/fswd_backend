@@ -6,7 +6,7 @@ import errorHandler from './middleware/error_handler.js';
 import userRoutes from './routes/user_routes.js';
 import compayRoutes from './routes/company_routes.js';
 import authRoutes from './routes/auth_routes.js';
-
+import projectRoutes from './routes/project_routes.js';
 
 const app = express();
 const port = 8000;
@@ -14,11 +14,12 @@ const port = 8000;
 connectDB();
 
 app.use(cookieParser());
-app.use(cors({ origin: 'http://localhost:3000', credentials: true })); // replace with your frontend's URL
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(express.json());
 app.use(errorHandler);
 app.use('/users', userRoutes);
 app.use('/companies', compayRoutes);
+app.use('project', projectRoutes);
 app.use('/auth', authRoutes);
 
 app.listen(port, () => {
