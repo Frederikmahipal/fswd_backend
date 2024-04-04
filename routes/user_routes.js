@@ -19,16 +19,14 @@ router.get('/user/:userId/company', async (req, res) => {
 
       const company = await Company.findOne({ company_email: { $regex: new RegExp(domain, 'i') } });
       if (!company) {
-         return res.status(404).json({ message: 'Company not found' });
+         return res.status(200).json({ user, message: 'Company not found' });
       }
 
-      res.status(200).json({ company });
+      res.status(200).json({ user, company });
    } catch (error) {
       res.status(500).json({ message: error.message });
    }
 });
-
-
 
 router.post('/signup', async (req, res) => {
    try {
@@ -60,29 +58,31 @@ router.post('/signup', async (req, res) => {
    }
 });
 
+
 router.post('/login', async (req, res) => {
    try {
-      const { email, password } = req.body;
-
-      const user = await User.findOne({ email });
-      if (!user) {
-         return res.status(400).json({ message: 'User does not exist' });
-      }
-
-      const isMatch = await bcryptjs.compare(password, user.password);
-      if (!isMatch) {
-         return res.status(400).json({ message: 'Invalid credentials' });
-      }
-
-      const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-      res.cookie('token', token, { httpOnly: true });
-    
-      res.status(200).json({ token, firstName: user.firstName, lastName: user.lastName, role: user.role });
+     const { email, password } = req.body;
+ 
+     const user = await User.findOne({ email });
+     if (!user) {
+       return res.status(400).json({ message: 'User does not exist' });
+     }
+ 
+     const isMatch = await bcryptjs.compare(password, user.password);
+     if (!isMatch) {
+       return res.status(400).json({ message: 'Invalid credentials' });
+     }
+ 
+     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+ 
+     res.cookie('token', token, { httpOnly: true });
+   
+     // Include user._id in the response
+     res.status(200).json({ token, _id: user._id, firstName: user.firstName, lastName: user.lastName, role: user.role });
    } catch (error) {
-      res.status(500).json({ message: 'Server error' });
+     res.status(500).json({ message: 'Server error' });
    }
-});
+ });
 
 router.post('/signout', (req, res) => {
   
