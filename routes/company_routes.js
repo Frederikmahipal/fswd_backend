@@ -37,7 +37,6 @@ router.post('/create', authJwt, roleCheck(['admin']), async (req, res) => {
         console.error('Error creating company:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
-
 });
 
 router.delete('/delete/:id', authJwt, roleCheck(['admin']), async (req, res) => {
